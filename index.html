@@ -24,7 +24,7 @@
     --ink:#0a0604;
     --darker:#050302;
     --paper:#e0d2b0;
-    /* Capa local — salve a imagem como capa.jpg na mesma pasta do HTML */
+    /* Capa local — usada no topo e na seção Sobre */
     --capa: url("capa.jpg");
   }
   *{margin:0;padding:0;box-sizing:border-box}
@@ -34,6 +34,7 @@
     background:var(--ink);color:var(--cream);
     overflow-x:hidden;line-height:1.55;
     letter-spacing:.02em;
+    transition:background 0.8s ease;
   }
   /* grain + textura de papel envelhecido */
   body::after{
@@ -42,6 +43,76 @@
     animation:grain .6s steps(2) infinite;
   }
   @keyframes grain{0%{transform:translate(0,0)}50%{transform:translate(-1%,0)}100%{transform:translate(1%,-1%)}}
+
+  /* ===== BOTÃO RGB FLUTUANTE ===== */
+  .rgb-btn {
+    position: fixed;
+    bottom: 1.5rem;
+    left: 1.5rem;
+    z-index: 10000;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    border: 3px solid var(--ink);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Arial Black', sans-serif;
+    font-weight: 900;
+    font-size: .6rem;
+    letter-spacing: .15em;
+    color: #fff;
+    text-shadow: 1px 1px 2px rgba(0,0,0,.8);
+    animation: rgbGlow 8s linear infinite, rgbBg 8s linear infinite;
+    transition: transform .15s ease;
+  }
+  .rgb-btn:hover { transform: scale(1.08); }
+  .rgb-btn svg { width: 28px; height: 28px; fill: currentColor; }
+
+  @keyframes rgbGlow {
+    0%   { box-shadow: 0 0 0 0 #ff0000, 0 0 22px 6px #ff0000; }
+    11%  { box-shadow: 0 0 0 0 #0066ff, 0 0 22px 6px #0066ff; }
+    22%  { box-shadow: 0 0 0 0 #ffd000, 0 0 22px 6px #ffd000; }
+    33%  { box-shadow: 0 0 0 0 #00c853, 0 0 22px 6px #00c853; }
+    44%  { box-shadow: 0 0 0 0 #ff8c00, 0 0 22px 6px #ff8c00; }
+    55%  { box-shadow: 0 0 0 0 #ff2e88, 0 0 22px 6px #ff2e88; }
+    66%  { box-shadow: 0 0 0 0 #8e44ad, 0 0 22px 6px #8e44ad; }
+    77%  { box-shadow: 0 0 0 0 #ff2e88, 0 0 22px 6px #ff2e88; }
+    88%  { box-shadow: 0 0 0 0 #b8e600, 0 0 22px 6px #b8e600; }
+    100% { box-shadow: 0 0 0 0 #ff0000, 0 0 22px 6px #ff0000; }
+  }
+  @keyframes rgbBg {
+    0%, 100% { background-color: #ff0000; }
+    11% { background-color: #0066ff; }
+    22% { background-color: #ffd000; }
+    33% { background-color: #00c853; }
+    44% { background-color: #ff8c00; }
+    55% { background-color: #ff2e88; }
+    66% { background-color: #8e44ad; }
+    77% { background-color: #ff2e88; }
+    88% { background-color: #b8e600; }
+  }
+
+  /* ===== FUNDO ANIMADO QUANDO LIGADO ===== */
+  body.rgb-mode-active { animation: bgPulse 8s linear infinite; }
+  @keyframes bgPulse {
+    0%, 100% { background-color: #3a0000; }
+    11% { background-color: #001b3a; }
+    22% { background-color: #3a3000; }
+    33% { background-color: #00330f; }
+    44% { background-color: #3a1f00; }
+    55% { background-color: #3a0020; }
+    66% { background-color: #1f0033; }
+    77% { background-color: #3a0020; }
+    88% { background-color: #2a3300; }
+  }
+  body.rgb-mode-active section,
+  body.rgb-mode-active footer,
+  body.rgb-mode-active .hero {
+    background: rgba(10, 6, 4, 0.65) !important;
+    transition: background 0.8s ease;
+  }
 
   /* HERO */
   .hero{
@@ -60,7 +131,6 @@
     animation:slowzoom 36s ease-in-out infinite alternate;
   }
   @keyframes slowzoom{from{transform:scale(1.03)}to{transform:scale(1.12)}}
-  /* tint RDR2 — sépia dominante, ouro do entardecer, vermelho Van der Linde */
   .hero-tint{
     position:absolute;inset:0;z-index:1;pointer-events:none;
     background:
@@ -86,7 +156,7 @@
     filter:blur(34px);pointer-events:none;
   }
 
-  /* HUD RDR2 — cores do gang + coordenadas da frontier */
+  /* HUD RDR2 */
   .hud-top{
     position:absolute;top:0;left:0;right:0;z-index:3;
     display:flex;justify-content:space-between;align-items:flex-start;
@@ -110,9 +180,7 @@
     background:rgba(10,6,4,.65);
     letter-spacing:.22em;
   }
-  .hud-top .wanted .star{
-    color:var(--gold-bright);text-shadow:0 0 8px var(--gold-glow);
-  }
+  .hud-top .wanted .star{color:var(--gold-bright);text-shadow:0 0 8px var(--gold-glow)}
   .hud-top .honor{
     display:flex;flex-direction:column;align-items:flex-end;gap:.2rem;
     border-right:3px solid var(--gold-bright);padding-right:.7rem;
@@ -120,39 +188,21 @@
   .hud-top .honor .lbl{color:var(--gold-bright);font-weight:700;font-size:.55rem;letter-spacing:.3em;text-shadow:1px 1px 0 var(--ink)}
   .hud-top .honor .val{color:var(--cream-bright);font-weight:900;font-size:.85rem;letter-spacing:.08em;text-shadow:1px 1px 0 var(--ink),2px 2px 0 var(--wine)}
 
-  /* painel inferior — HUD de cores: health/health core, stamina/dead eye */
   .hud-side{
     position:absolute;bottom:1.5rem;left:1.5rem;z-index:3;
     display:flex;flex-direction:column;gap:.45rem;
     font-family:'Georgia',serif;font-size:.6rem;
     letter-spacing:.2em;text-transform:uppercase;
     padding:.7rem .9rem;
-    background:
-      linear-gradient(180deg,rgba(58,36,16,.75),rgba(10,6,4,.9)),
-      var(--darker);
+    background:linear-gradient(180deg,rgba(58,36,16,.75),rgba(10,6,4,.9)),var(--darker);
     border:2px solid var(--sepia);
     box-shadow:inset 0 0 20px rgba(0,0,0,.8),2px 2px 0 rgba(0,0,0,.75);
     clip-path:polygon(0 0,100% 0,100% 85%,95% 100%,0 100%);
   }
-  .hud-side .stat-row{
-    display:flex;align-items:center;gap:.5rem;
-  }
-  .hud-side .stat-row .lbl{
-    font-weight:700;font-size:.5rem;letter-spacing:.28em;
-    width:60px;color:var(--gold-bright);
-    text-shadow:1px 1px 0 var(--ink);
-  }
-  .hud-side .stat-row .track{
-    width:120px;height:6px;
-    background:rgba(10,6,4,.9);
-    border:1px solid var(--ink);
-    overflow:hidden;
-    box-shadow:inset 0 0 4px rgba(0,0,0,.9);
-  }
-  .hud-side .stat-row .fill{
-    height:100%;
-    box-shadow:inset 0 1px 0 rgba(255,255,255,.2);
-  }
+  .hud-side .stat-row{display:flex;align-items:center;gap:.5rem}
+  .hud-side .stat-row .lbl{font-weight:700;font-size:.5rem;letter-spacing:.28em;width:60px;color:var(--gold-bright);text-shadow:1px 1px 0 var(--ink)}
+  .hud-side .stat-row .track{width:120px;height:6px;background:rgba(10,6,4,.9);border:1px solid var(--ink);overflow:hidden;box-shadow:inset 0 0 4px rgba(0,0,0,.9)}
+  .hud-side .stat-row .fill{height:100%;box-shadow:inset 0 1px 0 rgba(255,255,255,.2)}
   .hud-side .stat-row .fill.health{width:80%;background:linear-gradient(90deg,var(--wine),var(--wine-bright))}
   .hud-side .stat-row .fill.stamina{width:65%;background:linear-gradient(90deg,var(--sepia),var(--sepia-glow))}
   .hud-side .stat-row .fill.deadeye{width:40%;background:linear-gradient(90deg,var(--gold),var(--gold-bright))}
@@ -163,11 +213,7 @@
     font-size:clamp(3rem,13vw,9.5rem);
     line-height:.9;letter-spacing:.01em;text-transform:uppercase;
     color:var(--cream-bright);
-    text-shadow:
-      2px 2px 0 var(--wine),
-      4px 4px 0 var(--sepia),
-      6px 6px 0 var(--ink),
-      0 0 100px rgba(92,21,32,.5);
+    text-shadow:2px 2px 0 var(--wine),4px 4px 0 var(--sepia),6px 6px 0 var(--ink),0 0 100px rgba(92,21,32,.5);
     margin-bottom:.6rem;
   }
   h1.logo span{
@@ -208,8 +254,7 @@
   }
   .btn:hover{
     background:var(--cream);color:var(--ink);border-color:var(--gold-bright);
-    transform:translateY(-2px);
-    text-shadow:none;
+    transform:translateY(-2px);text-shadow:none;
   }
   .btn.solid:hover{
     background:linear-gradient(180deg,var(--gold-bright),var(--gold));
@@ -244,22 +289,18 @@
     text-shadow:2px 2px 0 var(--wine),4px 4px 0 var(--sepia),6px 6px 0 var(--ink);
   }
 
-  /* SERVIÇOS — cartazes WANTED */
+  /* SERVIÇOS */
   #servicos{background:linear-gradient(180deg,var(--ink),var(--darker))}
   .cards{
     display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.5rem;
     padding:1rem;
-    background:
-      linear-gradient(180deg,rgba(58,36,16,.4),rgba(10,6,4,.9)),
-      var(--darker);
+    background:linear-gradient(180deg,rgba(58,36,16,.4),rgba(10,6,4,.9)),var(--darker);
     border:2px solid var(--sepia);
     box-shadow:inset 0 0 50px rgba(0,0,0,.75),3px 3px 0 rgba(0,0,0,.7);
   }
   .card{
     position:relative;padding:2rem 1.5rem 1.6rem;
-    background:
-      linear-gradient(180deg,rgba(107,74,42,.5),rgba(58,36,16,.95)),
-      var(--leather);
+    background:linear-gradient(180deg,rgba(107,74,42,.5),rgba(58,36,16,.95)),var(--leather);
     border:2px solid var(--sepia-bright);
     border-top:4px solid var(--wine-bright);
     transition:all .2s ease;text-decoration:none;color:inherit;display:block;
@@ -270,15 +311,12 @@
     position:absolute;top:.6rem;left:50%;transform:translateX(-50%);
     font-family:'Georgia',serif;font-weight:900;font-style:italic;
     font-size:.55rem;letter-spacing:.35em;color:var(--wine-bright);
-    text-shadow:1px 1px 0 var(--ink);
-    opacity:.9;
+    text-shadow:1px 1px 0 var(--ink);opacity:.9;
   }
   .card::after{
-    content:"";
-    position:absolute;inset:6px;
+    content:"";position:absolute;inset:6px;
     border:1px solid rgba(200,180,140,.25);
-    pointer-events:none;
-    transition:border-color .2s ease;
+    pointer-events:none;transition:border-color .2s ease;
   }
   .card:hover{
     transform:translateY(-3px);
@@ -286,40 +324,20 @@
     box-shadow:inset 0 0 40px rgba(232,192,96,.1),2px 2px 0 var(--ink),0 0 30px rgba(138,31,46,.4);
   }
   .card:hover::after{border-color:rgba(232,192,96,.5)}
-  .card .num{
-    font-family:'Georgia',serif;font-weight:900;
-    font-size:.65rem;letter-spacing:.35em;color:var(--gold-bright);margin-bottom:.9rem;
-    text-shadow:1px 1px 0 var(--ink);
-  }
+  .card .num{font-family:'Georgia',serif;font-weight:900;font-size:.65rem;letter-spacing:.35em;color:var(--gold-bright);margin-bottom:.9rem;text-shadow:1px 1px 0 var(--ink)}
   .card h3{
     font-family:'Georgia','Times New Roman',serif;font-weight:900;
     font-size:1.55rem;text-transform:uppercase;margin-bottom:.5rem;
     letter-spacing:.02em;color:var(--cream-bright);
     text-shadow:1px 1px 0 var(--ink),2px 2px 0 var(--wine);
   }
-  .card p{
-    font-family:'Georgia',serif;font-weight:400;
-    color:rgba(224,210,176,.8);font-size:.92rem;margin-bottom:1rem;
-    font-style:italic;
-  }
-  .card .price{
-    font-family:'Georgia','Times New Roman',serif;font-weight:900;
-    font-size:1.85rem;color:var(--gold-bright);
-    text-shadow:1px 1px 0 var(--ink),2px 2px 0 var(--wine),0 0 22px rgba(212,168,58,.5);
-  }
-  .card .card-cta{
-    display:inline-block;margin-top:.9rem;
-    font-family:'Georgia',serif;font-weight:900;
-    font-size:.68rem;letter-spacing:.28em;text-transform:uppercase;
-    color:var(--cream-bright);
-    border-bottom:1px solid var(--cream-bright);padding-bottom:.2rem;
-    transition:color .15s ease,border-color .15s ease;
-    text-shadow:1px 1px 0 var(--ink);
-  }
+  .card p{font-family:'Georgia',serif;font-weight:400;color:rgba(224,210,176,.8);font-size:.92rem;margin-bottom:1rem;font-style:italic}
+  .card .price{font-family:'Georgia','Times New Roman',serif;font-weight:900;font-size:1.85rem;color:var(--gold-bright);text-shadow:1px 1px 0 var(--ink),2px 2px 0 var(--wine),0 0 22px rgba(212,168,58,.5)}
+  .card .card-cta{display:inline-block;margin-top:.9rem;font-family:'Georgia',serif;font-weight:900;font-size:.68rem;letter-spacing:.28em;text-transform:uppercase;color:var(--cream-bright);border-bottom:1px solid var(--cream-bright);padding-bottom:.2rem;transition:color .15s ease,border-color .15s ease;text-shadow:1px 1px 0 var(--ink)}
   .card:hover .card-cta{color:var(--gold-glow);border-color:var(--gold-glow)}
 
   /* SOBRE */
-  #sobre{background:var(--darker)}
+  #sobre{background:var(--darker); padding-bottom: 0;}
   .stripe{
     display:flex;gap:2rem;overflow:hidden;white-space:nowrap;
     padding:1.2rem 0;margin-bottom:4rem;
@@ -335,12 +353,18 @@
   .stripe-track span{opacity:.9}
   .stripe-track span::after{content:"✦";color:var(--gold-bright);margin-left:2rem;font-size:.75em}
   @keyframes scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-  .about-grid{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center}
-  .about-grid p{
-    font-family:'Georgia',serif;font-weight:400;font-style:italic;
-    font-size:1.05rem;color:rgba(224,210,176,.85);margin-bottom:1rem;letter-spacing:.02em;
+  
+  .about-text {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+    padding: 0 1rem;
   }
-  .stats{display:flex;gap:2.5rem;flex-wrap:wrap;margin-top:2rem}
+  .about-text p{
+    font-family:'Georgia',serif;font-weight:400;font-style:italic;
+    font-size:1.1rem;color:rgba(224,210,176,.85);margin-bottom:1rem;letter-spacing:.02em;
+  }
+  .stats{display:flex;justify-content:center;gap:3rem;flex-wrap:wrap;margin-top:2.5rem}
   .stat .big{
     font-family:'Georgia','Times New Roman',serif;font-weight:900;
     font-size:3rem;color:var(--cream-bright);
@@ -351,135 +375,85 @@
     font-size:.65rem;letter-spacing:.3em;text-transform:uppercase;
     color:rgba(224,210,176,.6);margin-top:.4rem;
   }
-  .neon-frame{
-    aspect-ratio:1/1;border:3px solid var(--sepia-bright);position:relative;overflow:hidden;
-    box-shadow:0 0 70px rgba(58,36,16,.5),inset 0 0 50px rgba(0,0,0,.75),3px 3px 0 rgba(0,0,0,.7);
+
+  /* CONTAINER DA IMAGEM CORRIGIDO (Bug resolvido) */
+  .about-image-container {
+    width: 100%;
+    max-width: 1100px; /* Mesma largura do resto do site */
+    margin: 4rem auto 0;
+    padding: 0 1.5rem;
   }
-  .neon-frame img{
-    width:100%;height:100%;object-fit:cover;
-    filter:contrast(1.15) saturate(.55) brightness(.7) sepia(.5);
+  .neon-frame {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9; /* Mantém a proporção de foto panorâmica sem achatar */
+    overflow: hidden;
+    border: 4px solid var(--sepia-bright);
+    border-radius: 4px;
+    box-shadow: 0 10px 50px rgba(0,0,0,.8), inset 0 0 40px rgba(0,0,0,.6);
+    background-color: var(--leather-deep); /* Fundo escuro para não dar "buraco" vazio se a imagem falhar */
+    background-image: linear-gradient(180deg, rgba(107,74,42,.2), rgba(10,6,4,.9));
   }
-  .neon-frame::after{
-    content:"";position:absolute;inset:0;
-    background:
-      radial-gradient(circle at 50% 50%,transparent 15%,rgba(0,0,0,.88) 100%),
-      radial-gradient(circle at 50% 100%,rgba(212,168,58,.25),transparent 55%);
-    pointer-events:none;
+  .neon-frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+    filter: contrast(1.15) saturate(.55) brightness(.7) sepia(.5);
+  }
+  /* Vinheta em cima da foto */
+  .neon-frame::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 50% 50%, transparent 40%, rgba(0,0,0,.85) 100%);
+    pointer-events: none;
   }
 
   /* HORÁRIOS */
   #horarios{background:linear-gradient(180deg,var(--darker),var(--ink))}
   .hours{display:grid;gap:0;max-width:640px;border:2px solid var(--sepia);box-shadow:3px 3px 0 rgba(0,0,0,.75)}
-  .hours .row{
-    display:flex;justify-content:space-between;padding:1rem 1.4rem;
-    border-bottom:1px solid rgba(107,74,42,.5);
-    font-family:'Georgia',serif;font-weight:700;font-style:italic;
-    font-size:1rem;text-transform:uppercase;letter-spacing:.06em;
-    background:rgba(58,36,16,.4);
-  }
+  .hours .row{display:flex;justify-content:space-between;padding:1rem 1.4rem;border-bottom:1px solid rgba(107,74,42,.5);font-family:'Georgia',serif;font-weight:700;font-style:italic;font-size:1rem;text-transform:uppercase;letter-spacing:.06em;background:rgba(58,36,16,.4)}
   .hours .row:last-child{border-bottom:none}
   .hours .row .day{color:var(--cream)}
   .hours .row .time{color:var(--gold-bright);text-shadow:1px 1px 0 var(--ink),0 0 12px rgba(212,168,58,.4)}
 
   /* CTA FINAL */
-  #contato{
-    text-align:center;
-    background:
-      radial-gradient(ellipse at center,rgba(92,21,32,.5),transparent 60%),
-      radial-gradient(ellipse at 50% 100%,rgba(184,144,46,.25),transparent 55%),
-      var(--darker);
-    position:relative;overflow:hidden;
-  }
-  #contato::before{
-    content:"✦ VAN DER LINDE GANG ✦";
-    position:absolute;top:2rem;left:50%;transform:translateX(-50%);
-    font-family:'Georgia',serif;font-weight:700;font-style:italic;
-    font-size:.6rem;letter-spacing:.5em;color:rgba(200,180,140,.4);
-    pointer-events:none;white-space:nowrap;
-    text-shadow:1px 1px 0 var(--ink);
-  }
-  #contato::after{
-    content:"NEW HANOVER · 1899";
-    position:absolute;bottom:1.5rem;left:50%;transform:translateX(-50%);
-    font-family:'Georgia',serif;font-weight:700;
-    font-size:.55rem;letter-spacing:.45em;color:rgba(184,144,46,.35);
-    pointer-events:none;white-space:nowrap;
-  }
-  #contato h2{
-    font-family:'Georgia','Times New Roman',serif;font-weight:900;
-    font-size:clamp(2.8rem,9vw,6.5rem);color:var(--cream-bright);
-    text-shadow:3px 3px 0 var(--wine),6px 6px 0 var(--sepia),9px 9px 0 var(--ink);
-    position:relative;z-index:1;
-  }
-  #contato p{
-    font-family:'Georgia',serif;color:rgba(224,210,176,.9);
-    max-width:520px;margin:0 auto 2.5rem;font-size:1.1rem;
-    position:relative;z-index:1;font-style:italic;
-  }
+  #contato{text-align:center;background:radial-gradient(ellipse at center,rgba(92,21,32,.5),transparent 60%),radial-gradient(ellipse at 50% 100%,rgba(184,144,46,.25),transparent 55%),var(--darker);position:relative;overflow:hidden}
+  #contato::before{content:"✦ VAN DER LINDE GANG ✦";position:absolute;top:2rem;left:50%;transform:translateX(-50%);font-family:'Georgia',serif;font-weight:700;font-style:italic;font-size:.6rem;letter-spacing:.5em;color:rgba(200,180,140,.4);pointer-events:none;white-space:nowrap;text-shadow:1px 1px 0 var(--ink)}
+  #contato::after{content:"NEW HANOVER · 1899";position:absolute;bottom:1.5rem;left:50%;transform:translateX(-50%);font-family:'Georgia',serif;font-weight:700;font-size:.55rem;letter-spacing:.45em;color:rgba(184,144,46,.35);pointer-events:none;white-space:nowrap}
+  #contato h2{font-family:'Georgia','Times New Roman',serif;font-weight:900;font-size:clamp(2.8rem,9vw,6.5rem);color:var(--cream-bright);text-shadow:3px 3px 0 var(--wine),6px 6px 0 var(--sepia),9px 9px 0 var(--ink);position:relative;z-index:1}
+  #contato p{font-family:'Georgia',serif;color:rgba(224,210,176,.9);max-width:520px;margin:0 auto 2.5rem;font-size:1.1rem;position:relative;z-index:1;font-style:italic}
 
   /* FOOTER */
-  footer{
-    padding:3rem 1.5rem;text-align:center;
-    border-top:3px solid var(--wine);background:var(--darker);
-    position:relative;
-  }
-  footer::before{
-    content:"";position:absolute;top:0;left:0;right:0;height:4px;
-    background:repeating-linear-gradient(90deg,var(--wine) 0 18px,var(--sepia) 18px 26px,var(--ink) 26px 30px);
-    opacity:.85;
-  }
-  footer .fb{
-    font-family:'Georgia','Times New Roman',serif;font-weight:900;
-    font-size:clamp(1.8rem,5vw,3rem);text-transform:uppercase;letter-spacing:.04em;
-    color:var(--cream-bright);text-shadow:2px 2px 0 var(--wine),4px 4px 0 var(--ink);
-  }
-  footer .addr{
-    font-family:'Georgia',serif;color:rgba(224,210,176,.7);
-    margin-top:.8rem;font-size:.9rem;letter-spacing:.1em;text-transform:uppercase;font-style:italic;
-  }
-  footer .small{
-    font-family:'Georgia',serif;color:rgba(224,210,176,.35);
-    margin-top:2rem;font-size:.7rem;letter-spacing:.25em;text-transform:uppercase;
-  }
-  footer .dev{
-    margin-top:2.5rem;padding-top:1.8rem;
-    border-top:1px solid rgba(107,74,42,.5);
-    font-family:'Georgia',serif;font-size:.85rem;letter-spacing:.08em;
-    color:rgba(224,210,176,.7);
-  }
-  footer .dev a{
-    color:var(--gold-bright);text-decoration:none;font-weight:900;
-    border-bottom:1px solid var(--gold-bright);padding-bottom:1px;
-    transition:color .15s ease,border-color .15s ease;
-    font-style:italic;
-    text-shadow:1px 1px 0 var(--ink);
-  }
+  footer{padding:3rem 1.5rem;text-align:center;border-top:3px solid var(--wine);background:var(--darker);position:relative}
+  footer::before{content:"";position:absolute;top:0;left:0;right:0;height:4px;background:repeating-linear-gradient(90deg,var(--wine) 0 18px,var(--sepia) 18px 26px,var(--ink) 26px 30px);opacity:.85}
+  footer .fb{font-family:'Georgia','Times New Roman',serif;font-weight:900;font-size:clamp(1.8rem,5vw,3rem);text-transform:uppercase;letter-spacing:.04em;color:var(--cream-bright);text-shadow:2px 2px 0 var(--wine),4px 4px 0 var(--ink)}
+  footer .addr{font-family:'Georgia',serif;color:rgba(224,210,176,.7);margin-top:.8rem;font-size:.9rem;letter-spacing:.1em;text-transform:uppercase;font-style:italic}
+  footer .small{font-family:'Georgia',serif;color:rgba(224,210,176,.35);margin-top:2rem;font-size:.7rem;letter-spacing:.25em;text-transform:uppercase}
+  footer .dev{margin-top:2.5rem;padding-top:1.8rem;border-top:1px solid rgba(107,74,42,.5);font-family:'Georgia',serif;font-size:.85rem;letter-spacing:.08em;color:rgba(224,210,176,.7)}
+  footer .dev a{color:var(--gold-bright);text-decoration:none;font-weight:900;border-bottom:1px solid var(--gold-bright);padding-bottom:1px;transition:color .15s ease,border-color .15s ease;font-style:italic;text-shadow:1px 1px 0 var(--ink)}
   footer .dev a:hover{color:var(--cream-bright);border-color:var(--cream-bright)}
 
   /* WHATSAPP FLUTUANTE */
   .wa-float{
     position:fixed;bottom:1.5rem;right:1.5rem;z-index:9999;
-    display:flex;align-items:center;gap:.7rem;
-    padding:.9rem 1.3rem;
+    display:flex;align-items:center;justify-content:center;
+    width:64px;height:64px;
+    border-radius:50%;
     background:#25d366;color:#fff;text-decoration:none;
-    font-family:'Georgia',serif;font-weight:900;font-size:.85rem;
-    letter-spacing:.12em;text-transform:uppercase;
-    border:2px solid var(--ink);
-    box-shadow:0 0 26px rgba(37,211,102,.55),3px 3px 0 rgba(0,0,0,.8);
+    border:3px solid var(--ink);
     animation:pulse 2.4s infinite;transition:transform .15s ease;
   }
-  .wa-float:hover{transform:scale(1.04)}
-  .wa-float svg{width:22px;height:22px;fill:#fff;flex-shrink:0}
+  .wa-float:hover{transform:scale(1.08)}
+  .wa-float svg{width:32px;height:32px;fill:#fff;flex-shrink:0}
   @keyframes pulse{
     0%,100%{box-shadow:0 0 26px rgba(37,211,102,.55),3px 3px 0 rgba(0,0,0,.8)}
     50%{box-shadow:0 0 42px rgba(37,211,102,.9),3px 3px 0 rgba(0,0,0,.8)}
   }
-  .wa-float .wa-label{display:none}
-  @media(min-width:640px){.wa-float .wa-label{display:inline}}
 
   @media(max-width:760px){
-    .about-grid{grid-template-columns:1fr}
-    .neon-frame{max-width:320px;margin:0 auto}
     section{padding:4rem 1.2rem}
     .btn{padding:.9rem 1.8rem;font-size:.8rem}
     .hud-top{font-size:.6rem;padding:1rem;letter-spacing:.12em;flex-wrap:wrap;gap:.4rem}
@@ -489,7 +463,14 @@
     .hud-side .stat-row .track{width:90px}
     .hud-side .stat-row .lbl{width:50px;font-size:.45rem}
     .scroll-hint{bottom:1rem;right:1rem;font-size:.55rem}
-    .wa-float{bottom:1rem;right:1rem}
+    .wa-float{bottom:1rem;right:1rem;width:56px;height:56px}
+    .wa-float svg{width:28px;height:28px}
+    .rgb-btn{bottom:1rem;left:1rem;width:56px;height:56px}
+    .rgb-btn svg{width:24px;height:24px}
+    
+    /* Ajuste Mobile da Imagem */
+    .about-image-container { padding: 0 1.2rem; margin-top: 2rem; }
+    .neon-frame { aspect-ratio: 4 / 3; } /* Um pouco mais quadrada no celular pra não ficar muito fina */
   }
 </style>
 </head>
@@ -572,22 +553,26 @@
       <span>Dom Barbearia</span><span>Francisco Beltrão</span><span>Corte na régua</span><span>Atitude</span><span>Dom Barbearia</span><span>Francisco Beltrão</span><span>Corte na régua</span><span>Atitude</span>
     </div>
   </div>
+  
   <div class="wrap">
-    <div class="about-grid">
-      <div>
-        <div class="kicker">A casa</div>
-        <h2>Estilo é atitude</h2>
-        <p>Na Dom, a cadeira é trono e o espelho é palco. Cada corte sai com assinatura — sem pressa, sem achismo, no detalhe.</p>
-        <p>Ambiente de rua, atendimento de rei. Chega, senta, e sai com a cabeça no ponto.</p>
-        <div class="stats">
-          <div class="stat"><div class="big">+8</div><div class="lbl">anos na régua</div></div>
-          <div class="stat"><div class="big">+5k</div><div class="lbl">cortes feitos</div></div>
-          <div class="stat"><div class="big">5.0</div><div class="lbl">nota da casa</div></div>
-        </div>
+    <div class="about-text">
+      <div class="kicker" style="justify-content:center;">A casa</div>
+      <h2>Estilo é atitude</h2>
+      <p>Na Dom, a cadeira é trono e o espelho é palco. Cada corte sai com assinatura — sem pressa, sem achismo, no detalhe.</p>
+      <p>Ambiente de rua, atendimento de rei. Chega, senta, e sai com a cabeça no ponto.</p>
+      
+      <div class="stats">
+        <div class="stat"><div class="big">+8</div><div class="lbl">anos na régua</div></div>
+        <div class="stat"><div class="big">+5k</div><div class="lbl">cortes feitos</div></div>
+        <div class="stat"><div class="big">5.0</div><div class="lbl">nota da casa</div></div>
       </div>
-      <div class="neon-frame">
-        <img src="https://images.unsplash.com/photo-1585747860715-2ba37e788b70?q=80&w=900&auto=format&fit=crop" alt="Interior de barbearia com cadeira e espelho">
-      </div>
+    </div>
+  </div>
+
+  <!-- ESPAÇO DA IMAGEM CORRIGIDO (MOLDURA PROPORCIONAL) -->
+  <div class="about-image-container">
+    <div class="neon-frame">
+      <img src="capa.jpg" alt="Dom Barbearia">
     </div>
   </div>
 </section>
@@ -626,11 +611,22 @@
   </div>
 </footer>
 
+<!-- BOTÃO RGB -->
+<button class="rgb-btn" id="rgbBtn" aria-label="Alternar cor de fundo">
+  <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/><circle cx="12" cy="12" r="4"/></svg>
+</button>
+
 <!-- WHATSAPP FLUTUANTE -->
 <a class="wa-float" href="https://wa.me/5546991219785?text=Ol%C3%A1%20Dom%20Barbearia%2C%20vim%20pelo%20site" target="_blank" rel="noopener" aria-label="Falar no WhatsApp">
   <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3C9.4 3 4 8.4 4 15c0 2.1.6 4.1 1.6 5.9L4 29l8.3-1.6c1.7.9 3.6 1.4 5.7 1.4 6.6 0 12-5.4 12-12S22.6 3 16 3zm0 21.8c-1.8 0-3.5-.5-5-1.4l-.4-.2-4.9.9.9-4.8-.3-.4c-1-1.6-1.5-3.4-1.5-5.3 0-5.4 4.4-9.8 9.8-9.8s9.8 4.4 9.8 9.8-4.4 9.8-9.8 9.8zm5.4-7.3c-.3-.1-1.7-.8-2-.9-.3-.1-.5-.1-.7.1-.2.3-.8.9-.9 1.1-.2.2-.3.2-.6.1-.3-.1-1.2-.5-2.3-1.4-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.4.1-.6.1-.1.3-.3.4-.5.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5-.1-.1-.7-1.6-.9-2.2-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.1.2 2.1 3.2 5.1 4.5.7.3 1.3.5 1.7.6.7.2 1.3.2 1.8.1.6-.1 1.7-.7 1.9-1.4.2-.7.2-1.2.2-1.3-.1-.2-.3-.2-.6-.3z"/></svg>
-  <span class="wa-label">WhatsApp</span>
 </a>
+
+<script>
+  const rgbBtn = document.getElementById('rgbBtn');
+  rgbBtn.addEventListener('click', () => {
+    document.body.classList.toggle('rgb-mode-active');
+  });
+</script>
 
 </body>
 </html>
